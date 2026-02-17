@@ -121,8 +121,8 @@ server.tool(
       } catch (_) { /* skip spaces that error */ }
     }
 
-    // Fetch subtasks if requested
-    if (include_subtasks) {
+    // Fetch subtasks if requested, or automatically when searching by query
+    if (include_subtasks || query) {
       const parents = [...allTasks];
       for (const task of parents) {
         try {
