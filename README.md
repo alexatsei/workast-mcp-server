@@ -2,7 +2,7 @@
 
 Connect [Claude Code](https://docs.anthropic.com/en/docs/claude-code) to [Workast](https://www.workast.com/) — view, create, and manage tasks directly from your terminal.
 
-Built by the Sei Foundation growth team.
+Built by the Sei Development Foundation growth team.
 
 ## What it does
 
