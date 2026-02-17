@@ -87,15 +87,16 @@ server.tool(
 
 server.tool(
   'list_tasks',
-  'Search/list tasks. Filter by space, status, assignee, or text query.',
+  'Search/list tasks. Filter by space, status, assignee, or text query. Set include_subtasks=true to also search within subtasks (fetches full task details, slower).',
   {
     space_id: z.string().optional().describe('Filter by space/list ID'),
     query: z.string().optional().describe('Text search query'),
     status: z.enum(['active', 'done', 'all']).optional().default('active').describe('Task status filter'),
     assignee: z.string().optional().describe('Filter by assignee user ID'),
     limit: z.number().optional().default(25).describe('Max results (default 25)'),
+    include_subtasks: z.boolean().optional().default(false).describe('Include subtasks in results (slower — fetches each task\'s details)'),
   },
-  async ({ space_id, query, status, assignee, limit }) => {
+  async ({ space_id, query, status, assignee, limit, include_subtasks }) => {
     const spaceIds = [];
     if (space_id) {
       spaceIds.push({ id: space_id, name: '' });
@@ -118,6 +119,26 @@ server.tool(
           : tasks;
         allTasks.push(...tagged);
       } catch (_) { /* skip spaces that error */ }
+    }
+
+    // Fetch subtasks if requested
+    if (include_subtasks) {
+      const parents = [...allTasks];
+      for (const task of parents) {
+        try {
+          const full = await api('GET', `/task/${task.id}`);
+          if (full.subTasks && full.subTasks.length > 0) {
+            const subs = full.subTasks.map(st => ({
+              ...st,
+              spaceName: task.spaceName || '',
+              parentTaskId: task.id,
+              parentTaskName: task.text || task.name,
+              isSubtask: true,
+            }));
+            allTasks.push(...subs);
+          }
+        } catch (_) { /* skip tasks that error */ }
+      }
     }
 
     // Client-side filters
