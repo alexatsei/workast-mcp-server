@@ -36,21 +36,23 @@ This MCP (Model Context Protocol) server gives Claude Code full access to your W
 ### Option 1: Automatic (recommended)
 
 ```bash
-git clone <your-repo-url> ~/workast-mcp-server
+git clone https://github.com/alexatsei/workast-mcp-server.git ~/workast-mcp-server
 cd ~/workast-mcp-server
-./setup.sh
+./setup.sh your_api_token_here
 ```
+
+Or run `./setup.sh` without the token and it'll prompt you interactively.
 
 The script will:
 1. Install dependencies
-2. Ask for your Workast API token
+2. Use your token (from argument or interactive prompt)
 3. Register the MCP server with Claude Code
 
 ### Option 2: Manual
 
 1. **Clone and install:**
    ```bash
-   git clone <your-repo-url> ~/workast-mcp-server
+   git clone https://github.com/alexatsei/workast-mcp-server.git ~/workast-mcp-server
    cd ~/workast-mcp-server
    npm install
    ```

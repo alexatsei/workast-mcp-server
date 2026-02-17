@@ -3,7 +3,9 @@ set -e
 
 # ─── Workast MCP Server Setup ────────────────────────────────────────────────
 # Run this once to install dependencies and register the server with Claude Code.
-# Usage: ./setup.sh
+# Usage: ./setup.sh [your_api_token]
+#   - With token:    ./setup.sh wat::your_token_here
+#   - Without token: ./setup.sh  (will prompt interactively)
 # ──────────────────────────────────────────────────────────────────────────────
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -42,14 +44,20 @@ npm install --silent
 echo "✅ Dependencies installed"
 echo ""
 
-# 3. Get API token
-echo "🔑 Enter your Workast API token"
-echo "   (starts with wat:: — get it from Workast Settings > API)"
-echo ""
-read -rp "   Token: " WORKAST_TOKEN
+# 3. Get API token (from argument or interactive prompt)
+if [ -n "$1" ]; then
+  WORKAST_TOKEN="$1"
+  echo "🔑 Using API token from argument"
+else
+  echo "🔑 Enter your Workast API token"
+  echo "   (starts with wat:: — get it from Workast Settings > API)"
+  echo ""
+  read -rp "   Token: " WORKAST_TOKEN
+fi
 
 if [ -z "$WORKAST_TOKEN" ]; then
   echo "❌ No token provided. Exiting."
+  echo "   Usage: ./setup.sh [your_api_token]"
   exit 1
 fi
 
