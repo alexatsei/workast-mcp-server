@@ -257,7 +257,7 @@ server.tool(
     text: z.string().describe('Comment text'),
   },
   async ({ task_id, text }) =>
-    ok(await api('POST', `/task/${task_id}/activity`, { text }))
+    ok(await api('POST', `/task/${task_id}/activity`, { text, type: 'comment' }))
 );
 
 server.tool(
